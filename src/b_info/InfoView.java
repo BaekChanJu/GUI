@@ -1,13 +1,12 @@
 package b_info;
 
-
-//임포트 영역
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.swing.ImageIcon;
@@ -18,285 +17,359 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.xml.xpath.XPathEvaluationResult;
+
+public class InfoView  {
+
+	//1. 멤버변수 선언
+	JFrame f; //프레임
+	JTextField tfname,tfid,tfgender,tfage,tfhome,tftel; //지정한 크기만큼 한줄을 쓸수 잇는 공간
+	JTextArea ta; // 지정한크기 만큼 쓸수잇는 공간
+	JButton badd,bshow,bsearch,bdelete,bcancle,bexit; //버튼 
+	Calendar c = Calendar.getInstance();
+
+	ArrayList<PersonVO> list = new ArrayList<PersonVO>(); //고객장보가 한명일리없고 몇명인지도 모르니 어레이리스트사용
 
 
 
 
-public class InfoView {
-	//1.멤버변수선언라인
-	JFrame f;
-	JTextField tfName, tfId, tfTel, tfGender, tfHome, tfAge;
-	JTextArea ta;
-	JButton bAdd, bShow, bSearch, bDelete, bCancel, bExit;
+
+	//2. 멤버변수 객체생성
+	InfoView (){
+		f = new JFrame("DBTest"); // 창의 이름 설정
+		tfname = new JTextField(15);
+		tfid = new JTextField(15);
+		tftel = new JTextField(15);
+		tfgender = new JTextField(15);
+		tfage = new JTextField(15);
+		tfhome = new JTextField(15);
+		ta = new JTextArea(40,20);
+		badd = new JButton("Add");
+		bshow = new JButton("Show");
+		bsearch = new JButton("Search");
+		bdelete = new JButton("Delete");
+		bcancle = new JButton("Cancel");
+
+		bexit = new JButton("Exit(alt+x)",new ImageIcon("src//img//3.png"));//imageicon : 이미지가 있는 폴더의 좌표를 찍어서 불러온다. 
+		bexit.setHorizontalTextPosition(JButton.CENTER);//텍스트 안의 이미지 위치 지정
+		bexit.setVerticalTextPosition(JButton.BOTTOM);//텍스트안의 내용을 이미지 밑으로 지정
+		bexit.setRolloverIcon(new ImageIcon("src//img//2.png"));// 이미지에 마우스 커서를 올릴때 해당 이미지로 변환하는 구문
+		bexit.setPressedIcon(new ImageIcon("src//img//1.png"));// 이미지 클릭시 이미지 이미지 변경 
+		bexit.setToolTipText("시스템을 종료합니다");
+		bexit.setMnemonic('x');
 
 
 
 
-	//2.멤버변수 객체생성은 생성자 안쪽
-	InfoView(){
-		f = new JFrame("DBTest"); //타이틀이름,f변수로 사용
+	}
 
-		tfName = new JTextField(10); //한줄입력객체생성, 크기지정
-		tfId = new JTextField(10);
-		tfTel = new JTextField(10);
-		tfGender = new JTextField(10);
-		tfHome = new JTextField(10);
-		tfAge = new JTextField(10);
-
-		ta = new JTextArea(40,20);//여러줄입력객체생성, 크기지정
-
-		bAdd = new JButton("Add"); //버튼만들기 객체생성, 버튼이름설정
-		bShow = new JButton("Show");
-		bSearch = new JButton("Search");
-		bDelete = new JButton("Delete");
-		bCancel = new JButton("Cancel");
-		bExit = new JButton("Exit(alt + x)", //단축키 추가도 가능
-				new ImageIcon("src\\b_info\\imgs\\20220927_094322.png"));
-		bExit.setHorizontalTextPosition(JButton.CENTER); //수평
-		bExit.setVerticalTextPosition(JButton.BOTTOM);//수직
-		bExit.setRolloverIcon(
-				new ImageIcon("src\\b_info\\imgs\\20220927_094355.png"));//아이콘올리면변경
-		bExit.setPressedIcon(
-				new ImageIcon("src\\b_info\\imgs\\20220927_094405.png"));//아이콘클릭시변경
-		bExit.setToolTipText("프로그램종료"); //마우스대고 기다리면 넣은 단어가 뜸
-		bExit.setMnemonic('x'); //(alt + x) 이뜻 효과가뜸 종료가되진않음 코드안짜서 눌러진효과만나옴
-	} 
-
-
-
-
-	//3.화면구성하고 출력하는 함수
-	//전체프레임은 BorderLayout으로 지정하세용
-	//웨스트 -  JPanel 이용하기(왼쪽) / 근데 행열로 해줘야함 (GridLayout)6,2
-	//센터 - 에어리어
-	//사우스 - JPanel 이용하기 / 그리드 쓸꺼면 1,6으로
-
-
+	//3. 화면구성하고 출력
+	// 전체프레임 BorderLayout지정
+	// west : panel 붙이기 (GridLayout()6,2)
+	// center : 텍스트에어리어
+	// south : JPanel 붙이기 - (GridLayout()1,6)
 	public void addLayout() {
-		//전체프레임을 지정하기위한 BorderLayout 사용
-		f.setLayout(new BorderLayout());
+		f.setLayout(new BorderLayout()); // 동/서/남/북 으로 출력할 내용의 위치를 지정하여 출력하게 만드는 구문 
+		JPanel p = new JPanel(); // 패널 구문
+		p.setLayout(new GridLayout(6,2)); //출력시 지정한 행과 열로 출력되게 하는 구문 (그리드) 
 
-		//1.버튼
-		JPanel pSouth = new JPanel(); //버튼들 판때기 대주기
-		f.add(pSouth, BorderLayout.SOUTH); //아래클릭바
+		f.add(p , BorderLayout.WEST);// 텍스트 출력을 왼쪽에 하는 구문 
+		p.add(new JLabel("Name",JLabel.CENTER)); // "Name"이라고 출력
+		p.add(tfname);//텍스트 출력구문
 
-		pSouth.add(bAdd);
-		pSouth.add(bShow);
-		pSouth.add(bSearch);
-		pSouth.add(bDelete);
-		pSouth.add(bCancel);
-		pSouth.add(bExit);
+		p.add(new JLabel("Id",JLabel.CENTER));// "Id"이라고 출력
+		p.add(tfid);//텍스트 출력구문
 
+		p.add(new JLabel("Tel",JLabel.CENTER));// "Tel"이라고 출력
+		p.add(tftel);//텍스트 출력구문
 
+		p.add(new JLabel("Sex",JLabel.CENTER));// "Sex"라고 출력
+		p.add(tfgender);//텍스트 출력구문
 
+		p.add(new JLabel("Age",JLabel.CENTER));// "Age"라고 출력
+		p.add(tfage);//텍스트 출력구문
 
+		p.add(new JLabel("Home",JLabel.CENTER));// "Home"이라고 출력
+		p.add(tfhome);//텍스트 출력구문
 
+		//p.add(new JLabel("Name, id ,tel"));
+		JPanel j = new JPanel(); //새 패널 객체 생성
+		j.setLayout(new GridLayout(1,6));
+		f.add(j, BorderLayout.SOUTH);
+		j.add(badd);
+		j.add(bcancle);
+		j.add(bdelete);
+		j.add(bsearch);
+		j.add(bshow);
+		j.add(bexit);
 
-		//2.왼쪽한줄입력부분
-		JPanel pWest = new JPanel();
-		pWest.setLayout(new GridLayout(6,2)); //전체규격만들고 , 안에따로사용가능
-		f.add(pWest, BorderLayout.WEST);
+		f.add(ta, BorderLayout.CENTER); // 에리어 텍스트를 가운데에 놓는구문
 
-		pWest.add(new JLabel("Name", JLabel.CENTER));//어차피 한번지정해놓으면 안쓸꺼니 변수선언안하고 바로 생성가능
-		//위 녀석의 역활은 그칸에 모형을 만들어주는것이고
-		pWest.add(tfName); //모형만들었으니 출력구문이 필요
-
-		pWest.add(new JLabel("ID", JLabel.CENTER));
-		pWest.add(tfId);
-
-		pWest.add(new JLabel("Tel", JLabel.CENTER));
-		pWest.add(tfTel);
-
-		pWest.add(new JLabel("Gender", JLabel.CENTER));
-		pWest.add(tfGender);
-
-		pWest.add(new JLabel("Home", JLabel.CENTER));
-		pWest.add(tfHome);
-		
-		pWest.add(new JLabel("age", JLabel.CENTER));
-		pWest.add(tfAge);
+		f.setBounds(100,100,900,400); //창크기
+		f.setVisible(true);// 창 출력문
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//x누르면 창이 꺼짐과함께 프로그램 종료하는 구문
 
 
 
 
-		//3.여러줄 센터부분
-		f.add(ta,  BorderLayout.CENTER); //센터
 
+		bshow.addActionListener(new ActionListener()  {
+			public void actionPerformed(ActionEvent e){
+				//show 버튼이 눌러졌을때!! /add로 저장하고
+				selectAll(); //입력한고객정보가 저장되어 에어리어필드에서 나온다
 
-		//4.기본규격 만들기
-		f.setBounds(100,100,500,350); //창 사이즈 규격
-		f.setVisible(true); //실행은 true
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// 빨간정지버튼 누르지 않아도 자동 종료해줌
-	}
-
-
-	public void eventProc() {
-		//ADD 버튼 눌렸을때 이벤트처리
-		bAdd.addActionListener( new ActionListener()  { 
-			public void actionPerformed(ActionEvent e) {
-
-				JOptionPane.showMessageDialog(null, "Add 버튼클릭");			
 			}
-
-		});
-		bShow.addActionListener( new ActionListener()  { 
-			public void actionPerformed(ActionEvent e) {
-
-				JOptionPane.showMessageDialog(null, "Show 버튼클릭");			
-			}
-
-		});
-		bSearch.addActionListener( new ActionListener()  { 
-			public void actionPerformed(ActionEvent e) {
-
-				JOptionPane.showMessageDialog(null, "Search 버튼클릭");			
-			}
-
-		});
-		bDelete.addActionListener( new ActionListener()  { 
-			public void actionPerformed(ActionEvent e) {
-
-				JOptionPane.showMessageDialog(null, "Delete 버튼클릭");			
-			}
-
-		});
-		bCancel.addActionListener( new ActionListener()  { 
-			public void actionPerformed(ActionEvent e) {
-
-				JOptionPane.showMessageDialog(null, "Cancel 버튼클릭");			
-			}
-
-		});
-		bExit.addActionListener( new ActionListener()  { 
-			public void actionPerformed(ActionEvent e) {
-
-				JOptionPane.showMessageDialog(null, "Exit 버튼클릭");			
-			}
-
 		});
 
 
-		//주민번호 입력창에서 엔터쳤을때 /근데 입력한 그 글씨를 얻어오고싶어!! 
-		tfId.addActionListener( new ActionListener()  { 
-			public void actionPerformed(ActionEvent e) {
 
-				getJumininfo(); //이렇게 함수를 넣어주어서 만든 프로그램을 하나로 묶은것이다
-				}
-			});
-		
-		
-		
-		
-		
-		
-		//주민번호 입력창에서 고객이 엔터쳤을때
-		tfId.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {
-				getJumininfo();
+		//  bsearch 버튼으로 만들어져서 버튼을 눌렀을때 타입이 JButton
+		bsearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//고객이 서치버튼을 눌렀을떄
+				selectByTell(); 
 			}
-			public void focusLost(FocusEvent e) {
-		
-				}	
-			});
-		
-		
-		
-		
-		//고객이 엔터안치고 입력창에 포커스 이벤트를 발생했을때
-		tfId.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent e) {
+		});
+
+
+
+
+		// 서치버튼 누르지않고 번호에서 그냥 엔터쳤을때 타입이 JTextField
+		tftel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				//서치버튼 누르지 않고 번호에서 엔터쳤을때
+				selectByTell();
+			}
+		});// end of addActionListener
+
+
+
+
+		bdelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				//삭제 다짜고짜 안됨 무언가 삭제할지 알아야 삭제가능 search로 찾아야할꺼아님
+				//그사람이 누구인지 알수있는 유일한 값은 주민번호임 근데 요즘트랜드는 전화번호로 찾아냄
+				//고유의 그항목을 찾는걸 키 라고 부른다 키값으로 전화번호!
+				 deletByTell();
+				 selectByTell();
 				
+
+
 			}
+		});
+
+		bcancle.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				clearTextfield();
+				JOptionPane.showMessageDialog(null, "삭제완료");
+			}
+		});
+
+
+
+		//주민번호 입력창에서 엔터 쳤을때 
+		tfid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				jumininfo();
+
+			}
+		});// end of addActionListener
+		//고객이 엔터안치고 입력창에 포커스 이벤트를 발생했을때 //이건 다른 기능을 눌렀을때를의미
+		//그래서 tel부분과는 다른 아래 구문을 이용
+		tfid.addFocusListener(new FocusListener() {
+
+			public void focusGained(FocusEvent e) {
+			}
+
 			public void focusLost(FocusEvent e) {
-				getJumininfo();
-				}	
-			});
-		
+				jumininfo();
+			}
+
+		});
+
 	}
 
-	//함수안에 저장해서 위에서 부르는것임 위 주민등록번호 프로그램만든걸
-	//지금 프로그램만든 부분은 지웠고 여기 함수에 저장을 한것이다
-	void getJumininfo() {
-		String jumin = tfId.getText();
-		if(jumin.length()<14) { //입력한주민이 14보다 작으면
-			JOptionPane.showMessageDialog(null, "-포함한 15자를 맞춰주셈");
-			return; //끝냈던 곳으로 리턴시켜라 ~
+
+
+	public void evenProc() {
+		//ADD 버튼이 눌렷을때 이벤트 처리
+		badd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				inputdata(); //고객의 정보가 저장이된다 //PersonVO필드에
+				clearTextfield(); //다썻을때 또 지우라고 불러줌
+				selectAll();//자동인것처럼 보이게 하려고 저장하고 지워져도 옆에 목록은 떠주니까
+			}
+		});
+	}
+
+
+
+
+
+	////각각의 텍스트필드 와 텍스트에어리어 값을 지우기
+	void clearTextfield() {
+		ta.setText(null);
+		//나머지 텍스트 필드도 지우기
+		tfage.setText(null); //아무것도 지정하지 않거나 "" 공백을 넣으면 지워진다
+		tfgender.setText(null);
+		tfhome.setText(null);
+		tfid.setText(null);
+		tfname.setText(null);
+		tftel.setText(null);
+
+	}//end of clearTextfield
+
+
+
+	// add버튼을 눌럿을때 텍스트 필드에 입력한 사용자의 값들을 PersonVO에 저장하기
+
+
+	void inputdata() {
+		//방법 1. 각각의 텍스트 필드의 입력값을 얻어오기
+		//방법 2. 1번의 값들을 PersonVo 멤버변수에 저장하기 (셋터나 , 생성자를 이용하거나)
+		PersonVO vo = new PersonVO(); //객체를 먼저만들어줘 서 세터로 넣어주는거임
+
+		//이건 결국 한사람의 정보니 어레이리스트에 저장만 해주면 되겠네? 그럼 계속 입력이되겠네?
+		vo.setName(tfname.getText());
+		vo.setAge(Integer.parseInt(tfage.getText())); //형변환
+		vo.setTel(tftel.getText());
+		vo.setId(tfid.getText());
+		vo.setGender(tfgender.getText());
+		vo.setHome(tfhome.getText());
+
+		list.add(vo);
+		//입력을 다하고 show 버튼눌렀을테 텍스트에어리어에 뜨게 하고싶다면??!   
+
+	}//end of inputdata
+
+
+	void selectAll() {
+		//어레이리스트에 저장된 정보를 모두 텍스트에어리어 여러줄받는곳에 출력하려고 하는 함수
+		//어레이리스트는 결론은 배열이기에 for문을 사용하는데 향샹된 for문을 사용해도 되겠네?
+
+		for(PersonVO vo :list ) {
+			ta.setText("전체목록\n\n"); //그전께 없어지고 출력됨 안그러면 계속나옴 데이터가 쌓여서
+			//어따출력해?
+			//셋텍스트쓰면 기존에 있는 내용은 지워버림 저장하면서 나와야하는데
+			ta.append(vo.toString());// append를 써야함 / 아까만든 toString까지
+		}
+	}//end of selectAll
+
+
+
+	void selectByTell() {
+		//입력한 전화번호값을 얻어오기 //겟으로 얻고 셋으로 출력
+		String te1 =  tftel.getText(); //번호 얻어오기
+
+		//입력받은 전화번호가 공백이라면 메세지 창을 출력
+		if(te1.equals("")) {
+			JOptionPane.showConfirmDialog(null, "전화번호를 입력하세요");
+			return; //입력안하면 메세지창 띄우고 바로 나가버려야함 밑에 가 작동되면안됨
 		}
 
-		// 주민번호 7번쨰 문자로 성별을 구하여 성병찰에 출력
-		String man = null;
-		char sung =  jumin.charAt(7); 
+		//리스트에 저장된 PersonVO의 전화번호와 비교를 해야함 그래서 그번호가 맞으면 그내용을
+		//각각의 택스트필드에 출력을 해줘야한다
+		//리스트에서 하나씩 빼오려니까 반복문으로 뺴와야한당
 
-		if(sung == '1' ||sung == '3' || sung == '9') { //숫자1과 문자1은 다르니 char로 넣어줘야함
-			man = "남자";
-		}else if(sung == '2' || sung == '4' || sung == '0') {
-			man = "여자";
-		}
-
-		tfGender.setText(man);
-
-		//주민번호의 8번째 문자로 출신지를 구하여 출신지창에 출력
-		char chul = jumin.charAt(8);
-		String home = null;
-
-		if(chul == '0') {
-			home = "서울";
-		}else if(chul == '1') {
-			home = "인천/부산";
-		}else if(chul == '2') {
-			home = "경기";
-
-
-			switch(chul) {
-			case '0' : 	
-				home = "서울";
-				break;
-			case '1' :
-				home = "인/부산";
-				break; 
-			case '2' :
-				home = "경기";
-				break;
-			case '9' : 
-				home = "제주";
-			default : 
-
+		for( PersonVO vo : list) {
+			if(te1.equals(vo.getTel())) {
+				tfname.setText(vo.getName());
+				tfid.setText(vo.getId());
+				tfgender.setText(vo.getGender());
+				tfage.setText(String.valueOf(vo.getAge()));
+				tfhome.setText(vo.getHome());
+				//번호치고 입력만하면 모든정보가 다 올라옴 저장했다면
 			}
 		}
-		tfHome.setText(home);
+
+
+
+	}//end of selectByTell
+	
+	void deletByTell() {
+		//입력한 전화번호값을 일단 얻어오기 그냥 딜리트를 누를수도있으니까
+		//입력받은 전화번호가 공백이라면 입력 메세지창출력
+		//리스트에 저장된 PersonVO의 전화번호와 비교하여
+		//해당 전화번호가 있으면 그 해당하는 PersonVO를 리스트에서 삭제
+		// 삭제하고나서 break로 반복문 끝내기
+		String te1 =  tftel.getText();
+		
+		if(te1.equals("")) {
+			JOptionPane.showConfirmDialog(null, "전화번호를 입력하세요");
+			return;
+			}// end of if
+		
+		for(PersonVO vo : list) {
+			if(te1.equals(vo.getTel()));
+			list.remove(vo); //리무브를 해줘야한다 / 리무브는 삭제를 의미
+			break;
+			//캔슬하고 다시 번호치고 엔터치면 이전 정보 다없어짐
+		}// end of for
 		
 		
-		
-		//주민번호에서 년도의 의해 나이를 구해서 나이창에출력 형변환 필요
-		String nai = jumin.substring(0,2);
+	}
 
 
-		int sunai = Integer.parseInt(nai); 
-
-		int age =0 ;
 
 
-		Calendar c = Calendar.getInstance();
+	void jumininfo() {
+		String junin = tfid.getText();
+		if(junin.length()<14) {
+			JOptionPane.showMessageDialog(null, " - 포함한 15자를 맞춰주세요");
+			junin.charAt(7);
+
+			return;   
+		}
+
+		if(junin.charAt(7)== '1') { 
+			tfgender.setText("남자");
+
+		}else{
+			tfgender.setText("여자");
+		}
+		switch(junin.charAt(8)) {
+
+		case '0' :
+			tfhome.setText("서울");
+			break;
+		case '1' :
+			tfhome.setText("인천/부산");
+			break;
+		case '2' :
+			tfhome.setText("경기도");
+			break;
+		case '9' :
+			tfhome.setText("제주도");
+			break;
+
+		}
 		int year = c.get(Calendar.YEAR);
+		String bir = junin.substring(0,2);
+		int sbir = Integer.parseInt(bir);
+		int bb = (year - (sbir+1900))+1;
+		String rb = String.valueOf(bb);
+		tfage.setText(rb);
 
-		age =year - (1900 + sunai) + 1; 
-		
-		String s = String.valueOf(age);
-		
-		tfAge.setText(s); //셋텍에는 인트가 안들어가서 문자로 바꿔줘야한다 valueOf
 
 	}
-	
 
 	public static void main(String[] args) {
 
-		InfoView info = new InfoView();
-		info.addLayout();
-		info.eventProc();
+		InfoView  info = new InfoView (); // 객체 새롭게 지정하며 생성
+		info.addLayout();// 출력구문
+		info.evenProc();
+
+		String man = null;
+		String woman = null;
+
+
+
+
 
 	}
 
 }
 
-
+//이프로그램은 껏다 키면 저장안되고 다사라짐 파일이나 DB에 저장 자바는 DB 오라클에 저장할꺼임
