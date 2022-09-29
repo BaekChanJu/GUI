@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 
 
@@ -17,20 +18,20 @@ public class SideMenu extends JPanel {
 	
 	JLabel la = new JLabel("맥 사이드메뉴"); //그냥 탭아래 라벨을 의미
 	JButton bSnakWrap, bMcWings, bCheese, bMcNuggets, bFrench, bColeslaw  ;
-	JButton[] bOp =  new JButton[2]; // + -
-	JButton bEqual; // =
 	
-	int first, second;
+	MainTest mt;
 	
-	int[] price = {2900,5500,2700,2000,1700,1900};
 	
 	
 
 
 
-	SideMenu(){
+	SideMenu(MainTest ma){
+		mt = ma;
 		sideImgs();
 		sideMenuChanju();
+		eventProc();
+	
 
 	}
 
@@ -61,6 +62,7 @@ public class SideMenu extends JPanel {
 		bColeslaw = new JButton("코울슬로 1900원", new ImageIcon("src//hamberger0928//imgs//ko.png"));
 		bColeslaw.setHorizontalTextPosition(JButton.CENTER);
 		bColeslaw.setVerticalTextPosition(JButton.BOTTOM);
+		
 	}
 
 
@@ -71,24 +73,69 @@ public class SideMenu extends JPanel {
 		JPanel p = new JPanel();
 		p.setLayout(new GridLayout(2,3));
 		
+		
 		p.add(bSnakWrap);
 		p.add(bMcWings);
 		p.add(bCheese);
 		p.add(bMcNuggets);
 		p.add(bFrench);
 		p.add(bColeslaw);
-		add(p, BorderLayout.CENTER);
+		add(p, BorderLayout.NORTH);
+		
+	
+		
+		
+		
 		
 		}//end of sideMenuChanju
 	
-	void eventProc() { // ??
-		for(int i = 0; i<price.length;i++) {
-			price[i] = i;
-			
-		}
+	void eventProc() { // 
+		bSnakWrap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            //	new bSnakWrap();
+            	mt.ta.append("스낵랩 3700원"+"\n");
+           }
+       }); // end of addActionListener
+		bCheese.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	//new bCheese();
+            	mt.ta.append("스낵랩 3700원"+"\n");
+            	
+           }
+       }); // end of addActionListener
+		bMcWings.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	//new bMcWings();
+            	mt.ta.append("스낵랩 3700원"+"\n");
+           }
+       }); // end of addActionListener
+		bColeslaw.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	//new bColeslaw();
+            	mt.ta.append("스낵랩 3700원"+"\n");
+           }
+       }); // end of addActionListener
+		bMcNuggets.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	//new bMcNuggets();
+            	mt.ta.append("스낵랩 3700원"+"\n");
+           }
+       }); // end of addActionListener
+		bFrench.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	//new bFrench();
+            	mt.ta.append("스낵랩 3700원"+"\n");
+           }
+       }); // end of addActionListener
+		
+	} // enf eventProc()
+	
+	
+	
+	
+
 		
 		
-	}//end of eventProc
-} //class main
+	}//end of eventProc//class main
 	
 

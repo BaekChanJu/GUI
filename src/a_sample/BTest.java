@@ -19,7 +19,7 @@ public class BTest extends JFrame {  //JFrame 은 파이널이 안붙어서 상�
 	void addLayout() {
 		add(btn); //부모에 이미 상속받아서 그냥 써도됌
 		
-		//부모꺼는 객체생성없이 그냥 가져다쓰면됨 
+		//부모꺼는 객체생성없이 그냥 가져다쓰면됨 ㄴ
 		setBounds(100,100,500,350);
 		setVisible(true); //화면출력
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
